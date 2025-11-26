@@ -39,6 +39,34 @@ jobs:
             libsdl2-ttf-dev \
             libgstreamer1.0-dev \
             libgstreamer-plugins-base1.0-dev \
+            libltdl-dev \
+            libzbar-dev
+
+      - name: Install Buildozer and Python Libraries
+        run: |
+          pip install --upgrade pip
+          pip install buildozer
+          pip install cython==0.29.36
+          pip install requests
+          # Install zbarcam but NOT the zbar dependency (handled by system)
+          pip install kivy-garden.zbarcam --no-deps
+          pip install pyzbar
+          pip install pillow
+
+      - name: Build Android Debug APK
+        run: |
+          # Removed "yes |" so we can see the real error if it fails
+          buildozer android debug
+
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: MissingInventoryApp-APK
+          path: bin/*.apk            libsdl2-image-dev \
+            libsdl2-mixer-dev \
+            libsdl2-ttf-dev \
+            libgstreamer1.0-dev \
+            libgstreamer-plugins-base1.0-dev \
             libltdl-dev
 
       - name: Install Buildozer and Python Libraries
