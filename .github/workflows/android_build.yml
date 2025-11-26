@@ -1,0 +1,43 @@
+# File: .github/workflows/android_build.yml
+
+name: Android APK Build (KivyMD)
+
+on:
+  # Triggers the build every time code is pushed to the main branch
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    # Runs the job on a Linux virtual machine (fastest for Kivy compilation)
+    runs-on: ubuntu-latest 
+
+    steps:
+      - uses: actions/checkout@v4 # 1. Get the project code
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Install Buildozer and Dependencies
+        run: |
+          sudo apt update
+          # Install compilation tools
+          sudo apt install -y python3-pip build-essential git
+          # Install necessary Python tools
+          pip install buildozer
+          pip install requests
+          # Install the Kivy Garden scanner dependency
+          pip install kivy-garden.zbarcam 
+
+      - name: Build Android Debug APK
+        run: |
+          # This command compiles the Python code into Android machine code
+          buildozer android debug
+
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: MissingInventoryApp-APK
+          # The compiled APK is always found here
+          path: bin/*.apk
