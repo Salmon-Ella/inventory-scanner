@@ -62,17 +62,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: MissingInventoryApp-APK
-          path: bin/*.apk          pip install cython==0.29.36
-          pip install requests
-          pip install kivy-garden.zbarcam
-
-      - name: Build Android Debug APK
-        run: |
-          # The "yes |" part forces acceptance of all licenses
-          yes | buildozer android debug
-
-      - name: Upload APK Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: MissingInventoryApp-APK
           path: bin/*.apk
