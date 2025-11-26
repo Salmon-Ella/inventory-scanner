@@ -11,7 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # Setup Python 3.11 (More stable for Buildozer than the latest alpha)
+      # Setup Python 3.11 (Stable for Buildozer)
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
@@ -31,9 +31,7 @@ jobs:
             libtool \
             pkg-config \
             zlib1g-dev \
-            libncurses5-dev \
-            libncursesw5-dev \
-            libtinfo5 \
+            libncurses-dev \
             cmake \
             libsdl2-dev \
             libsdl2-image-dev \
@@ -53,7 +51,6 @@ jobs:
 
       - name: Build Android Debug APK
         run: |
-          # Buildozer will handle the heavy lifting
           buildozer android debug
 
       - name: Upload APK Artifact
