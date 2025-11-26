@@ -1,41 +1,63 @@
-# File: .github/workflows/android_build.yml
-
 name: Android APK Build (KivyMD)
 
 on:
-  # Triggers the build every time code is pushed to the main branch
   push:
     branches: [ main ]
 
 jobs:
   build:
-    # Runs the job on a Linux virtual machine (fastest for Kivy compilation)
-    runs-on: ubuntu-latest 
+    runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4 # 1. Get the project code
+      - uses: actions/checkout@v4
+
+      # Setup Python 3.11 (More stable for Buildozer than the latest alpha)
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.x'
+          python-version: '3.11'
 
-      - name: Install Buildozer and Dependencies
+      - name: Install System Dependencies
         run: |
-          sudo apt update
-          # Install compilation tools
-          sudo apt install -y python3-pip build-essential git unzip zip libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev pkg-config libgl1-mesa-dev libgles2-mesa-dev
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential \
+            git \
+            python3-pip \
+            python3-setuptools \
+            libffi-dev \
+            libssl-dev \
+            autoconf \
+            libtool \
+            pkg-config \
+            zlib1g-dev \
+            libncurses5-dev \
+            libncursesw5-dev \
+            libtinfo5 \
+            cmake \
+            libsdl2-dev \
+            libsdl2-image-dev \
+            libsdl2-mixer-dev \
+            libsdl2-ttf-dev \
+            libgstreamer1.0-dev \
+            libgstreamer-plugins-base1.0-dev \
+            libltdl-dev
+
+      - name: Install Buildozer and Python Libraries
+        run: |
+          pip install --upgrade pip
+          pip install buildozer
+          pip install cython==0.29.36
           pip install requests
-          # Install the Kivy Garden scanner dependency
-          pip install kivy-garden.zbarcam 
+          pip install kivy-garden.zbarcam
 
       - name: Build Android Debug APK
         run: |
-          # This command compiles the Python code into Android machine code
+          # Buildozer will handle the heavy lifting
           buildozer android debug
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
           name: MissingInventoryApp-APK
-          # The compiled APK is always found here
           path: bin/*.apk
