@@ -3,9 +3,12 @@ title = Missing Inventory Scanner
 package.name = com.yourcompany.missingscanner
 package.domain = com.yourcompany
 source.dir = .
-# Added 'zbar' explicitly to requirements to ensure the scanner library loads
+version = 1.0
 requirements = python3,kivy,kivymd,requests,kivy_garden.zbarcam,zbar
-icon.filename = assets/images/icon.png
+
+# Commented out to prevent errors if you haven't uploaded an image yet.
+# icon.filename = assets/images/icon.png  
+
 orientation = portrait
 
 # --- Crucial Android Permissions ---
@@ -13,10 +16,9 @@ android.permissions = CAMERA,INTERNET,WRITE_EXTERNAL_STORAGE
 
 # --- Android Build Settings ---
 [android]
-# Target modern Android API level
 android.api = 33 
 min_sdk_version = 21
+android.accept_sdk_license = True
 
-# FIXED: Merged dependencies into a single line (removed the duplicate)
-# This includes the ZBar native library reference
+# Native dependencies for ZBar scanner
 android.gradle_dependencies = 'org.jni-libs:android-aarch64:0.0.1'
