@@ -1,22 +1,16 @@
-# missinginventoryapp.kv - KivyMD UI Structure
-
-#:import ZBarCam kivy_garden.zbarcam.ZBarCam 
 #:import MDSwipeToDismissItem kivymd.uix.list.MDSwipeToDismissItem
-#:import AsyncImage kivy.uix.image.AsyncImage
 #:import TwoLineListItem kivymd.uix.list.TwoLineListItem
-#:import MDSpinner kivymd.uix.spinner.MDSpinner
 
 ScreenManager:
     id: manager
 
-    # --- Screen 1: Main List Screen ---
     MDScreen:
         name: 'main_list_screen'
         MDBoxLayout:
             orientation: 'vertical'
 
             MDToolbar:
-                title: "Missing Inventory List"
+                title: "Safe Mode List"
                 elevation: 10
 
             RecycleView:
@@ -44,54 +38,33 @@ ScreenManager:
                 Widget: 
 
                 MDFloatingActionButton:
-                    icon: "barcode-scan"
+                    icon: "camera-off"
                     on_release: app.go_to_scanner_screen()
 
-    # --- Screen 2: Scanner View ---
     MDScreen:
         name: 'scanner_screen'
         MDBoxLayout:
             orientation: 'vertical'
+            padding: dp(20)
+            spacing: dp(20)
             
             MDToolbar:
-                title: "Scan Missing Item"
+                title: "Scanner (Safe Mode)"
                 left_action_items: [['arrow-left', lambda x: app.go_to_main_screen()]]
 
-            ZBarCam: 
-                id: scanner
-                # Crucial link: Triggers Python logic when a code is read
-                on_code: app.handle_barcode_scan(self.code[0]) 
+            MDLabel:
+                text: "Scanner Disabled for Testing.\nTap below to simulate a scan."
+                halign: "center"
 
-    # --- Screen 3: Loading Screen (Briefly shown during async lookup) ---
-    MDScreen:
-        name: 'loading_screen'
-        MDBoxLayout:
-            orientation: 'vertical'
-            MDToolbar:
-                title: "Looking Up Product..."
-            MDBoxLayout:
-                orientation: 'vertical'
-                padding: "20dp"
-                spacing: "20dp"
-                pos_hint: {'center_x': 0.5, 'center_y': 0.5}
-                MDSpinner:
-                    id: loading_spinner
-                    size_hint: None, None
-                    size: dp(46), dp(46)
-                    pos_hint: {'center_x': 0.5}
-                MDLabel:
-                    text: "Contacting online catalog..."
-                    halign: 'center'
+            MDRaisedButton:
+                text: "Simulate Scan (Add Test Item)"
+                pos_hint: {"center_x": .5}
+                on_release: app.simulate_scan()
 
-# --- Custom List Item Definition ---
-# This defines the look and the swipe-to-dismiss functionality
 <MissingItem@MDSwipeToDismissItem>:
     text: ''
     secondary_text: ''
-    source: ''
     barcode_id: ''
-    
-    # Crucial link: Runs the Python logic when the item is dismissed (swiped)
     on_dismiss: app.remove_found_item(root.barcode_id)
     
     MDBoxLayout:
@@ -99,16 +72,6 @@ ScreenManager:
         height: dp(64)
         padding: dp(5)
         
-        AsyncImage: 
-            source: root.source
-            size_hint_x: None
-            width: dp(48)
-            pos_hint: {'center_y': .5}
-            radius: [dp(4)]
-            allow_stretch: True
-            keep_ratio: True
-
         TwoLineListItem:
             text: root.text
             secondary_text: root.secondary_text
-            _no_ripple_effect: True
